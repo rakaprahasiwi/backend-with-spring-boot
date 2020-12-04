@@ -1,6 +1,5 @@
 package com.rakaprahasiwi.backendspringboot.jwt;
 
-import com.rakaprahasiwi.backendspringboot.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -31,9 +30,13 @@ public class JwtTokenProvider {
     @Value("${app.jwt.expiration-in-ms}")
     private Long jwtExpirationInMs;
 
-    public String generateToken(User user) {
-        return Jwts.builder().setSubject(user.getUsername())
-                .claim("roles", user.getRole())
+    public String generateToken(Authentication authentication) {
+        String authorities = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining());
+
+        return Jwts.builder().setSubject(authentication.getName())
+                .claim("roles", authorities)
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationInMs))
                 .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
     }

@@ -1,7 +1,8 @@
 package com.rakaprahasiwi.backendspringboot.controller;
 
+import com.rakaprahasiwi.backendspringboot.helper.UtilHelper;
 import com.rakaprahasiwi.backendspringboot.jwt.JwtTokenProvider;
-import com.rakaprahasiwi.backendspringboot.model.Role;
+import com.rakaprahasiwi.backendspringboot.model.Product;
 import com.rakaprahasiwi.backendspringboot.model.Transaction;
 import com.rakaprahasiwi.backendspringboot.model.User;
 import com.rakaprahasiwi.backendspringboot.service.ProductService;
@@ -11,8 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,10 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
-public class UserController {
+public class UserController extends UtilHelper {
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
 
@@ -42,25 +42,28 @@ public class UserController {
 
     @PostMapping("/api/user/registration")
     public ResponseEntity<?> register(@RequestBody User user) {
+        Map map = new HashMap();
         if (userService.findByUsername(user.getUsername()) != null) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            map.put("message", "Username " + user.getUsername() + " sudah digunakan.");
+            return new ResponseEntity<>(map, HttpStatus.CONFLICT);
         }
 
-        return new ResponseEntity<>(userService.saveUser(user), HttpStatus.CREATED);
+        userService.saveUser(user);
+        map.put("message", user.getUsername() + " berhasil didaftarkan.");
+        return new ResponseEntity<>(map, HttpStatus.CREATED);
     }
 
-    @PostMapping("/api/user/login")
+    @GetMapping("/api/user/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         Map map = new HashMap();
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
-            User user1 = userService.findByUsername(user.getUsername());
-            map.put("token", jwtTokenProvider.generateToken(user1));
-            map.put("status", "Berhasil login");
+//            User user1 = userService.findByUsername(user.getUsername());
+            map.put("token", jwtTokenProvider.generateToken(authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()))));
+            map.put("message", "Berhasil login");
             return new ResponseEntity<>(map, HttpStatus.OK);
         } catch (Exception e) {
-            map.put("username", user.getUsername());
-            map.put("status", "Data invalid");
+            map.put("message", "Username or password invalid");
             return new ResponseEntity<>(map, HttpStatus.OK);
         }
     }
@@ -73,6 +76,15 @@ public class UserController {
 
     @GetMapping("/api/user/products")
     public ResponseEntity<?> getAllProducts() {
-        return new ResponseEntity<>(productService.findAllProduct(), HttpStatus.OK);
+        Map map;
+        List<Product> productList = productService.findAllProduct();
+
+        if (productList.size() > 0) {
+            map = setOutputData(productList.size(), "Product found", productList);
+        } else {
+            map = setOutputData(productList.size(), "Product not found.", productList);
+        }
+
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 }
