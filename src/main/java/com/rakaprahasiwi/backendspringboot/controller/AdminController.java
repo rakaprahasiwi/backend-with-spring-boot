@@ -43,7 +43,7 @@ public class AdminController extends UtilHelper {
     }
 
     @GetMapping("/api/admin/user-all")
-    public ResponseEntity<?> findAllUser(@RequestBody User user) {
+    public ResponseEntity<?> findAllUser() {
         Map map;
         List<User> userList = userService.findAllUsers();
         if (userList.size() > 0) {
