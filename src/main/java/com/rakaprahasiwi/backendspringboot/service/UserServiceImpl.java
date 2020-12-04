@@ -18,34 +18,34 @@ public class UserServiceImpl implements UserService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User saveUser(final User user){
+    public User saveUser(final User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     //save can be used for update and insert operation in Database
     @Override
-    public User updateUser(User user){
+    public User updateUser(User user) {
         return userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(Long userId){
+    public void deleteUser(Long userId) {
         userRepository.deleteById(userId);
     }
 
     @Override
-    public User findByUsername(String username){
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username).orElse(null);
     }
 
     @Override
-    public List<User> findAllUsers(){
+    public List<User> findAllUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public Long numberOfUsers(){
+    public Long numberOfUsers() {
         return userRepository.count();
     }
 }
