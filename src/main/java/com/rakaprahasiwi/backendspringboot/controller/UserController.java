@@ -53,7 +53,7 @@ public class UserController extends UtilHelper {
         return new ResponseEntity<>(map, HttpStatus.CREATED);
     }
 
-    @GetMapping("/api/user/login")
+    @PostMapping("/api/user/login")
     public ResponseEntity<?> login(@RequestBody User user) {
         Map map = new HashMap();
         try {

@@ -47,7 +47,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.logout().permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/api/user/logout", "POST"));
         //login form and path
-        http.formLogin().loginPage("/api/user/login");
+//        http.formLogin().loginPage("/api/user/login");
         //enable basic authentication
         http.httpBasic();
         //cross side request forgery
