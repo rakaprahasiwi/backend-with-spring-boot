@@ -1,10 +1,7 @@
 package com.rakaprahasiwi.backendspringboot.controller;
 
 import com.rakaprahasiwi.backendspringboot.helper.UtilHelper;
-import com.rakaprahasiwi.backendspringboot.model.Product;
-import com.rakaprahasiwi.backendspringboot.model.StringResponse;
-import com.rakaprahasiwi.backendspringboot.model.Transaction;
-import com.rakaprahasiwi.backendspringboot.model.User;
+import com.rakaprahasiwi.backendspringboot.model.*;
 import com.rakaprahasiwi.backendspringboot.service.ProductService;
 import com.rakaprahasiwi.backendspringboot.service.TransactionService;
 import com.rakaprahasiwi.backendspringboot.service.UserService;
@@ -46,6 +43,54 @@ public class AdminController extends UtilHelper {
     public ResponseEntity<?> findAllUser() {
         Map map;
         List<User> userList = userService.findAllUsers();
+        if (userList.size() > 0) {
+            map = setOutputData(userList.size(), "User ditemukan", userList);
+        } else {
+            map = setOutputData(userList.size(), "Data not found.", userList);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/admin/user-all-name")
+    public ResponseEntity<?> findAllByName(@RequestBody User user) {
+        Map map;
+        List<User> userList = userService.findAllByName(user.getName());
+        if (userList.size() > 0) {
+            map = setOutputData(userList.size(), "User ditemukan", userList);
+        } else {
+            map = setOutputData(userList.size(), "Data not found.", userList);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/admin/user-allname")
+    public ResponseEntity<?> findAllbyNameNative(@RequestBody User user) {
+        Map map;
+        List<User> userList = userService.findAllbyNameNative(user.getName());
+        if (userList.size() > 0) {
+            map = setOutputData(userList.size(), "User ditemukan", userList);
+        } else {
+            map = setOutputData(userList.size(), "Data not found.", userList);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/admin/user-allrole")
+    public ResponseEntity<?> findRole(@RequestBody FindByRole role) {
+        Map map;
+        List<User> userList = userService.findRole(role.getRole());
+        if (userList.size() > 0) {
+            map = setOutputData(userList.size(), "User ditemukan", userList);
+        } else {
+            map = setOutputData(userList.size(), "Data not found.", userList);
+        }
+        return new ResponseEntity<>(map, HttpStatus.OK);
+    }
+
+    @PostMapping("/api/admin/user-allusernamerole")
+    public ResponseEntity<?> findUsermaneRole(@RequestBody FindByRole role) {
+        Map map;
+        List<String> userList = userService.findUsermaneRole(role.getRole());
         if (userList.size() > 0) {
             map = setOutputData(userList.size(), "User ditemukan", userList);
         } else {

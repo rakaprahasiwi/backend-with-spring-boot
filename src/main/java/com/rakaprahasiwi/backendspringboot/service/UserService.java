@@ -15,5 +15,13 @@ public interface UserService {
 
     List<User> findAllUsers();
 
+    List<User> findAllByName(String name);
+
+    List<User> findAllbyNameNative(String name);
+
+    List<User> findRole(String role);
+
+    List<String> findUsermaneRole(String role);
+
     Long numberOfUsers();
 }

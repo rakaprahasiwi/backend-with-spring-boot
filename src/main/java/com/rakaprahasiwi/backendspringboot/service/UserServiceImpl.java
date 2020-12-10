@@ -45,6 +45,26 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> findAllByName(String name) {
+        return userRepository.findAllByName(name);
+    }
+
+    @Override
+    public List<User> findAllbyNameNative(String name) {
+        return userRepository.findAllbyNameNative(name);
+    }
+
+    @Override
+    public List<User> findRole(String role) {
+        return userRepository.findRole(role);
+    }
+
+    @Override
+    public List<String> findUsermaneRole(String role) {
+        return userRepository.findUsermaneRole(role);
+    }
+
+    @Override
     public Long numberOfUsers() {
         return userRepository.count();
     }
